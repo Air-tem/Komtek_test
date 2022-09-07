@@ -5,7 +5,11 @@ interface
 uses Winapi.Windows, System.SysUtils, System.Classes, Vcl.Graphics, Vcl.Forms,
   Vcl.Controls, Vcl.Menus, Vcl.StdCtrls, Vcl.Dialogs, Vcl.Buttons, Winapi.Messages,
   Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.StdActns, Vcl.ActnList, Vcl.ToolWin,
-  Vcl.ImgList, System.ImageList, System.Actions;
+  Vcl.ImgList, System.ImageList, System.Actions,Unit_frChild, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf,
+  FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys,
+  FireDAC.Phys.MySQL, FireDAC.Phys.MySQLDef, FireDAC.VCLUI.Wait, Data.DB,
+  FireDAC.Comp.Client;
 
 type
   TMainForm = class(TForm)
@@ -61,6 +65,9 @@ type
     ToolButton10: TToolButton;
     ToolButton11: TToolButton;
     ImageList1: TImageList;
+    ToolButton12: TToolButton;
+    FDConnection1: TFDConnection;
+    FDPhysMySQLDriverLink1: TFDPhysMySQLDriverLink;
     procedure FileNew1Execute(Sender: TObject);
     procedure FileOpen1Execute(Sender: TObject);
     procedure HelpAbout1Execute(Sender: TObject);
@@ -83,12 +90,12 @@ uses CHILDWIN, About;
 
 procedure TMainForm.CreateMDIChild(const Name: string);
 var
-  Child: TMDIChild;
+  Child: TfrChild;
 begin
   { create a new MDI child window }
-  Child := TMDIChild.Create(Application);
+  Child := TfrChild.Create(Application);
   Child.Caption := Name;
-  if FileExists(Name) then Child.Memo1.Lines.LoadFromFile(Name);
+  //if FileExists(Name) then Child.Memo1.Lines.LoadFromFile(Name);
 end;
 
 procedure TMainForm.FileNew1Execute(Sender: TObject);
