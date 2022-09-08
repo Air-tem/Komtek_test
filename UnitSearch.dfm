@@ -12,9 +12,7 @@ object Frame2: TFrame2
     Width = 932
     Height = 49
     Align = alTop
-    Caption = 'Panel1'
     TabOrder = 0
-    ExplicitWidth = 1092
     object Label1: TLabel
       Left = 8
       Top = 18
@@ -49,6 +47,7 @@ object Frame2: TFrame2
       Top = 15
       Width = 81
       Height = 21
+      Date = 44812.000000000000000000
       Time = 0.534404004632961000
       Enabled = False
       ParseInput = True
@@ -62,6 +61,7 @@ object Frame2: TFrame2
       Height = 17
       Caption = #1087#1077#1088#1080#1086#1076#1099' '#1074#1085#1077#1089#1077#1085#1080#1103' '#1076#1072#1085#1085#1099#1093' c'
       TabOrder = 2
+      OnClick = CheckBox1Click
     end
     object DateTimePicker2: TDateTimePicker
       Left = 703
@@ -70,7 +70,10 @@ object Frame2: TFrame2
       Height = 21
       Date = 44811.000000000000000000
       Time = 0.534404004632961000
+      Enabled = False
+      ParseInput = True
       TabOrder = 3
+      OnChange = CheckBox1Click
     end
     object DateTimePicker3: TDateTimePicker
       Left = 808
@@ -79,7 +82,10 @@ object Frame2: TFrame2
       Height = 21
       Date = 44811.000000000000000000
       Time = 0.534404004632961000
+      Enabled = False
+      ParseInput = True
       TabOrder = 4
+      OnChange = CheckBox1Click
     end
     object CheckBox2: TCheckBox
       Left = 233
@@ -107,9 +113,10 @@ object Frame2: TFrame2
     Left = 0
     Top = 49
     Width = 932
-    Height = 200
+    Height = 225
     Align = alClient
     DataSource = DataSource1
+    ReadOnly = True
     TabOrder = 1
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
@@ -120,44 +127,53 @@ object Frame2: TFrame2
       item
         Expanded = False
         FieldName = 'id'
+        Title.Caption = #1053#1086#1084'.'
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'fio'
+        Title.Caption = #1060#1048#1054
         Width = 200
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'date_b'
+        Title.Caption = #1044#1072#1090#1072' '#1088#1086#1078#1076'.'
+        Width = 84
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'mD'
+        Title.Caption = #1055#1086#1089#1083'. '#1080#1079#1084#1077#1085#1077#1085
+        Width = 84
         Visible = True
       end>
   end
-  object DBNavigator1: TDBNavigator
-    Left = 0
-    Top = 249
-    Width = 932
-    Height = 25
-    DataSource = DataSource1
-    Align = alBottom
-    TabOrder = 2
-    ExplicitLeft = 128
-    ExplicitTop = 200
-    ExplicitWidth = 240
-  end
   object FDQuery1: TFDQuery
-    Active = True
-    AfterOpen = FDQuery1AfterOpen
     Connection = MainForm.FDConnection1
     SQL.Strings = (
       'set @f=:f, @dbS=:db,@dbE=:dbE, @des=:des, @def=:def;'
-      'select *'
-      'from human'
+      'select h.id,h.fio,h.date_b,t1.mD'
+      'from human h'
+      'left join '
+      '  (SELECT MAX(`ref_date`) as mD,`hum_id` FROM `reference` '
+      
+        '-- wr WHERE `ref_date`BETWEEN @des and @def     -- '#1091#1089#1083#1086#1074#1080#1077' '#1076#1083#1103' '#1087 +
+        #1086#1080#1089#1082#1072' '#1087#1086' '#1076#1072#1090#1077' '#1087#1086#1089#1083#1077#1076#1085#1077#1075#1086' '#1080#1079#1084#1077#1085#1077#1085#1080#1081
+      'GROUP by `hum_id`)t1 on t1.hum_id=h.id'
       'where'
-      '1'
-      '  and fio LIKE @f'
-      '-- db and date_b BETWEEN  @dbS AND @dbE')
+      ' fio LIKE @f'
+      
+        '-- db and date_b BETWEEN  @dbS AND @dbE       -- '#1091#1089#1083#1086#1074#1080#1077' '#1076#1083#1103' '#1087#1086#1080 +
+        #1089#1082#1072' '#1087#1086' '#1076#1072#1090#1077' '#1088#1086#1078#1076#1077#1085#1080#1103
+      
+        '-- de and mD IS NOT NULL                   -- '#1091#1089#1083#1086#1074#1080#1077' '#1076#1083#1103' '#1087#1086#1080#1089#1082#1072 +
+        ' '#1087#1086' '#1076#1072#1090#1077' '#1087#1086#1089#1083#1077#1076#1085#1077#1075#1086' '#1080#1079#1084#1077#1085#1077#1085#1080#1081
+      ''
+      'ORDER by mD DESC;')
     Left = 472
     Top = 72
     ParamData = <

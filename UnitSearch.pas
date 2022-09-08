@@ -24,19 +24,18 @@ type
     FDQuery1: TFDQuery;
     DataSource1: TDataSource;
     Panel1: TPanel;
-    DBNavigator1: TDBNavigator;
     DateTimePicker4: TDateTimePicker;
     Label2: TLabel;
     procedure Edit1Change(Sender: TObject);
     procedure CheckBox2Click(Sender: TObject);
     procedure DateTimePicker1Change(Sender: TObject);
     procedure DateTimePicker4Change(Sender: TObject);
-    procedure FDQuery1AfterOpen(DataSet: TDataSet);
+    procedure CheckBox1Click(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
-    minD,maxD:Tdate;
+
   end;
 
 implementation
@@ -44,6 +43,33 @@ implementation
 uses MAIN;
 
 {$R *.dfm}
+
+procedure TFrame2.CheckBox1Click(Sender: TObject);
+var
+  sq:string;
+begin
+      sq:= FDQuery1.SQL.Text;
+      
+      DateTimePicker2.Enabled:=CheckBox1.Checked;
+      DateTimePicker3.Enabled:=CheckBox1.Checked;
+
+      if CheckBox1.Checked then
+        begin
+             delete(sq,pos('-- wr',sq),5);
+             delete(sq,pos('-- de',sq),5);
+            FDQuery1.Params[3].Value:=DateTimePicker2.Date;
+            FDQuery1.Params[4].Value:=DateTimePicker3.Date;
+        end
+          else
+        begin
+          insert('-- de',sq,pos('and mD',sq));
+          insert('-- wr',sq,pos('WHERE ',sq));
+        end;
+
+        FDQuery1.Close;
+        FDQuery1.SQL.Text:= sq;
+        FDQuery1.Open;
+end;
 
 procedure TFrame2.CheckBox2Click(Sender: TObject);
 var
@@ -56,8 +82,6 @@ begin
 
       if CheckBox2.Checked then
         begin
-            if (DateTimePicker1.Date>maxD)or(DateTimePicker1.Date<minD) then DateTimePicker1.Date:=minD;
-            if (DateTimePicker4.Date>maxD)or(DateTimePicker4.Date<minD) then DateTimePicker4.Date:=maxD;
             delete(sq,pos('-- db',sq),5);
             FDQuery1.Params[1].Value:=DateTimePicker1.Date;
             FDQuery1.Params[2].Value:=DateTimePicker4.Date;
@@ -67,7 +91,6 @@ begin
      FDQuery1.Close;
      FDQuery1.SQL.Text:= sq;
      FDQuery1.Open;
-  //    memo1.Text:=sq;
 end;
 
 procedure TFrame2.DateTimePicker1Change(Sender: TObject);
@@ -89,19 +112,5 @@ begin
      FDQuery1.open;
 end;
 
-procedure TFrame2.FDQuery1AfterOpen(DataSet: TDataSet);
-begin
-       FDQuery1.First;
-      minD:=FDQuery1.Fields[2].AsDatetime;
-      maxD:=FDQuery1.Fields[2].AsDatetime;
-      while not FDQuery1.eof do
-        begin
-             if minD>FDQuery1.Fields[2].AsDatetime then minD:=FDQuery1.Fields[2].AsDatetime;
-             if maxD<FDQuery1.Fields[2].AsDatetime then maxD:=FDQuery1.Fields[2].AsDatetime;
-              
-             FDQuery1.Next;
-        end;
-        FDQuery1.First;
-end;
 
 end.
